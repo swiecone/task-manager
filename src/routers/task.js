@@ -1,11 +1,16 @@
 const express = require('express')
 const router = new express.Router()
 const Task = require('../models/task')
+const auth = require('../middleware/auth')
 
 //Create a new task 
-router.post('/tasks', async (req, res) =>{
-    const task = new Task(req.body)
-    console.log(task)
+router.post('/tasks', auth,  async (req, res) =>{
+  const task = new Task({
+      ...req.body,
+      owner: req.user._id
+  })  
+  
+  console.log(task)
 
     try {
         await task.save()
@@ -28,11 +33,12 @@ router.get('/tasks', async (req, res) => {
 })
 
 //Get one specific task from the list 
-router.get('/tasks/:id', async (req, res) =>{
+router.get('/tasks/:id', auth, async (req, res) =>{
     const _id = req.params.id 
 
     try {
-        const task = await Task.findById({_id})
+       // const task = await Task.findById({_id})
+       const task = await Task.findOne({ _id, owner: req.user._id})
 
         if (!task) {
             res.status(404).send("task not found")
