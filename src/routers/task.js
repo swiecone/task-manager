@@ -24,17 +24,29 @@ router.post('/tasks', auth,  async (req, res) =>{
 //Get a list of all the tasks 
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
+    const sort = {}
 
     if (req.query.completed) {
         match.completed = req.query.completed === 'true'
         console.log(match.completed)
+    }
 
+    if (req.query.sortBy) {
+        const parts = req.query.sortBy.split(':')
+        console.log(parts)
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+        console.log(sort[parts[0]])
     }
 
     try {
           await req.user.populate({
               path: 'tasks', 
-              match
+              match,
+              options:{
+                  limit: parseInt(req.query.limit),
+                  skip: parseInt(req.query.skip), 
+                  sort
+              }
           }).execPopulate()
         res.send(req.user.tasks)
 
