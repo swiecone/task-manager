@@ -33,9 +33,9 @@ router.get('/tasks', auth, async (req, res) => {
 
     if (req.query.sortBy) {
         const parts = req.query.sortBy.split(':')
-        console.log(parts)
+        // console.log(parts)
         sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
-        console.log(sort[parts[0]])
+    //    console.log(sort[parts[0]])
     }
 
     try {
@@ -48,6 +48,7 @@ router.get('/tasks', auth, async (req, res) => {
                   sort
               }
           }).execPopulate()
+
         res.send(req.user.tasks)
 
        } catch (e) {
@@ -74,8 +75,6 @@ router.get('/tasks/:id', auth, async (req, res) =>{
 })
 
 //Update a task 
-
-
 router.patch('/tasks/:id', auth, async (req, res) =>{
     const updates = Object.keys(req.body)
     const allowedUpdates = ['task', 'completed']

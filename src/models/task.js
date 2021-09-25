@@ -28,8 +28,8 @@ taskSchema.methods.toJSON =  function () {
     const taskObject =  task.toObject()
 
     delete  taskObject.owner 
-    delete taskObject.createdAt
-    delete taskObject.updatedAt
+    // delete taskObject.createdAt
+    // delete taskObject.updatedAt
     delete taskObject.__v
      
 
