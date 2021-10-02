@@ -2,6 +2,8 @@ const express = require('express')
 const router = new express.Router()
 const User = require('../models/user')
 const auth = require('../middleware/auth')
+const multer = require('multer')
+
 
 
 
@@ -120,25 +122,30 @@ router.delete('/users/me', auth, async (req, res) =>{
     }
 })
 
-const multer = require('multer')
 
 
 // This shows where the upload folder of files is. 
 // This will be images folder in root directory 
 const upload = multer({
-    dest: 'avatars'
+    dest: 'images',
+    limits: {
+        fileSize: 1000000,
+    },
+    fileFilter(req, file, cb) {
+       if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return cb(new Error('Please upload a image (jpg, jpeg, png)'))
+       }
+       
+        cb(undefined, true)
+    }
 })
 
 
-router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
-    try {
-        //   console.log(req.params.id)
-        res.send()
-       } catch (e) {
-           console.log(e)
-           res.status(500).send()
-       }   
-} )
+router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {    
+        res.send({response: 'File uploaded correctly to the server.'})
+}, (error, req, res, next) => {
+    res.status(400).send({error: error.message })
+})
 
 
 
