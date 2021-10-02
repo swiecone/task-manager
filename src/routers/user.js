@@ -120,6 +120,26 @@ router.delete('/users/me', auth, async (req, res) =>{
     }
 })
 
+const multer = require('multer')
+
+
+// This shows where the upload folder of files is. 
+// This will be images folder in root directory 
+const upload = multer({
+    dest: 'avatars'
+})
+
+
+router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
+    try {
+        //   console.log(req.params.id)
+        res.send()
+       } catch (e) {
+           console.log(e)
+           res.status(500).send()
+       }   
+} )
+
 
 
 module.exports = router 
