@@ -4,7 +4,7 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const multer = require('multer')
 const sharp = require('sharp')
-
+const { sendWelcomeEmail, sendByeByeEmail } = require('../emails/account')
 
 
 
@@ -13,9 +13,10 @@ const sharp = require('sharp')
 // User registration  
 router.post('/users', async (req, res) =>{
     const user = new User(req.body)
-
     try {
         await user.save()
+        sendWelcomeEmail(user.email, user.name)
+        console.log('email sent to '+user.name)
         const token = await user.generateAuthToken()
 
 
@@ -119,6 +120,8 @@ router.delete('/users/me', auth, async (req, res) =>{
         const user = await User.findByIdAndDelete(req.user._id)
         console.log(user)
         await req.user.remove()
+        sendByeByeEmail(user.email, user.name)
+        console.log('email sent to email '+ user.email+' with id '+ user._id)
         res.send(user)
     } catch (e) {
         res.status(500).send()
