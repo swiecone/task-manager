@@ -7,16 +7,13 @@ const sharp = require('sharp')
 const { sendWelcomeEmail, sendByeByeEmail } = require('../emails/account')
 
 
-
-
-
 // User registration  
 router.post('/users', async (req, res) =>{
     const user = new User(req.body)
     try {
         await user.save()
         sendWelcomeEmail(user.email, user.name)
-        console.log('email sent to '+user.name)
+        console.log('email sent to '+ user.name)
         const token = await user.generateAuthToken()
 
 
@@ -88,7 +85,6 @@ router.get('/users',auth , async (req, res) =>{
 // Get my user
 router.get('/users/me', auth , async (req, res) => { 
     res.send(req.user)
-
  })
 
 router.patch('/users/me', auth, async (req, res) =>{
